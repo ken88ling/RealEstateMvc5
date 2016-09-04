@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MongoDB.Driver;
+using RealEstateMvc5.App_Start;
+using RealEstateMvc5.Properties;
 
 namespace RealEstateMvc5.Controllers
 {
     public class HomeController : Controller
     {
+       
+        public RealEstateContext Context = new RealEstateContext();
+
         public ActionResult Index()
         {
-            return View();
+            Context.Database.GetStats();
+            return Json(Context.Database.Server.BuildInfo, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult About()
