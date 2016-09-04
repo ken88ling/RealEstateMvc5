@@ -1,0 +1,48 @@
+﻿@model RealEstateMvc5.Rentals.PostRental
+
+@{
+    ViewBag.Title = "Post";
+}
+
+<h2>Post Rental</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.NumberOfRooms, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.NumberOfRooms)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Address, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(m => m.Address)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Price, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(m => m.Price)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Post" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
