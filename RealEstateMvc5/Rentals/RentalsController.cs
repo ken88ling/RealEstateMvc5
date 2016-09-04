@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using MongoDB.Bson;
 
 namespace RealEstateMvc5.Rentals
 {
@@ -24,17 +25,17 @@ namespace RealEstateMvc5.Rentals
             Context.Rentals.Insert(rental);
             return RedirectToAction("Index");
         }
-
-
-        //public ActionResult Index()
-        //{
-        //    var rentals = Context.Rentals.FindAsync();
-        //    return View(rentals);
-        //}
+        
         public ActionResult Index()
         {
             var rentals = Context.Rentals.FindAll();
             return View(rentals);
+        }
+
+        public ActionResult AdjustPrice(string id)
+        {
+            var rental = Context.Rentals.FindOneById(new ObjectId(id));
+            return View(rental);
         }
     }
 }

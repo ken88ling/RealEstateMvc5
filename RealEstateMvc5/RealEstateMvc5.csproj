@@ -219,6 +219,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Rentals\AdjustPrice.cs" />
     <Compile Include="Rentals\PostRental.cs" />
     <Compile Include="Rentals\Rental.cs" />
     <Compile Include="Rentals\RentalsController.cs" />
@@ -290,6 +291,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Rentals\Post.cshtml" />
     <Content Include="Views\Rentals\Index.cshtml" />
+    <Content Include="Views\Rentals\AdjustPrice.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
