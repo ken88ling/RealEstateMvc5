@@ -34,8 +34,24 @@ namespace RealEstateMvc5.Rentals
 
         public ActionResult AdjustPrice(string id)
         {
-            var rental = Context.Rentals.FindOneById(new ObjectId(id));
+            var rental = GetRental(id);
             return View(rental);
         }
+
+        private Rental GetRental(string id)
+        {
+            var rental = Context.Rentals.FindOneById(new ObjectId(id));
+            return rental;
+        }
+
+        [HttpPost]
+        public ActionResult AdjustPrice(string id, AdjustPrice adjustPrice)
+        {
+            var rental = GetRental(id);
+            rental.AdjustPrice(adjustPrice);
+            Context.Rentals.Save(rental);
+            return RedirectToAction("Index");
+        }
+        
     }
 }

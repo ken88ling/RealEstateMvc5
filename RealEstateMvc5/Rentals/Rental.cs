@@ -28,9 +28,18 @@ namespace RealEstateMvc5.Rentals
             Address = (postRental.Address ?? string.Empty).Split('\n').ToList();
         }
 
+        public List<PriceAdjustment> Adjustments = new List<PriceAdjustment>();
+
         public Rental()
         {
 
+        }
+
+        public void AdjustPrice(AdjustPrice adjustPrice)
+        {
+            var adjustment = new PriceAdjustment(adjustPrice,Price);
+            Adjustments.Add(adjustment);
+            Price = adjustPrice.NewPrice;
         }
     }
 }

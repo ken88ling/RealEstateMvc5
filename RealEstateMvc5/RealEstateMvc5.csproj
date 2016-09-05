@@ -221,6 +221,7 @@
     </Compile>
     <Compile Include="Rentals\AdjustPrice.cs" />
     <Compile Include="Rentals\PostRental.cs" />
+    <Compile Include="Rentals\PriceAdjustment.cs" />
     <Compile Include="Rentals\Rental.cs" />
     <Compile Include="Rentals\RentalsController.cs" />
     <Compile Include="Startup.cs" />
