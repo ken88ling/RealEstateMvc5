@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
 namespace RealEstateMvc5.Rentals
@@ -27,10 +28,27 @@ namespace RealEstateMvc5.Rentals
             return RedirectToAction("Index");
         }
         
-        public ActionResult Index()
+        public ActionResult Index(RentalsFilter filters)
         {
-            var rentals = Context.Rentals.FindAll();
-            return View(rentals);
+            var rentals = FilterRentals(filters);
+
+            var model = new RentalsList()
+            {
+                Rentals = rentals,
+                Filters = filters
+            };
+
+            return View(model);
+        }
+
+        private MongoCursor<Rental> FilterRentals(RentalsFilter filters)
+        {
+            if (!filters.PriceLimit.HasValue)
+            {
+                return Context.Rentals.FindAll();
+            }
+            var query = Query<Rental>.LTE(r => r.Price, filters.PriceLimit);
+            return Context.Rentals.Find(query);
         }
 
         public ActionResult AdjustPrice(string id)
