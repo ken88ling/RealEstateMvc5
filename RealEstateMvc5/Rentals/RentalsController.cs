@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using MongoDB.Bson;
+using MongoDB.Driver.Builders;
 
 namespace RealEstateMvc5.Rentals
 {
@@ -52,6 +53,11 @@ namespace RealEstateMvc5.Rentals
             Context.Rentals.Save(rental);
             return RedirectToAction("Index");
         }
-        
+
+        public ActionResult Delete(string id)
+        {
+            Context.Rentals.Remove(Query.EQ("_id", new ObjectId(id)));
+            return RedirectToAction("Index");
+        }
     }
 }
