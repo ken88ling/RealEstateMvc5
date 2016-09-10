@@ -20,6 +20,8 @@ namespace RealEstateMvc5.Rentals
         [BsonRepresentation(BsonType.Double)]
         public decimal Price { get; set; }
 
+        public string ImageId { get; set; }
+
         public Rental(PostRental postRental)
         {
             Description = postRental.Description;
