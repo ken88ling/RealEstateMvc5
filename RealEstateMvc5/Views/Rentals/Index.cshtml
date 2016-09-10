@@ -10,6 +10,8 @@
 {
     <label for="PriceLimit">Price Limit</label>
     <input type="text" name="PriceLimit" value="@Model.Filters.PriceLimit"/>
+    <label for="MinimumRooms">Minimum Rooms</label>
+    <input type="text" name="MinimumRooms" value="@Model.Filters.MinimumRooms" />
     <input type="submit" value="Search"/>
 }
 <p>
@@ -43,7 +45,7 @@
             @Html.DisplayFor(modelItem => rental.NumberOfRooms)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => rental.Address)
+            @String.Join(" ", rental.Address)
         </td>
         <td>
             @Html.DisplayFor(modelItem => rental.Price)

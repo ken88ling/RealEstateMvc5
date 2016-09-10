@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
 
 namespace RealEstateMvc5.Rentals
 {
@@ -32,6 +33,9 @@ namespace RealEstateMvc5.Rentals
         {
             var rentals = FilterRentals(filters);
 
+            //var rentals = FilterRentals(filters)
+            //    .SetSortOrder(SortBy<Rental>.Ascending(r => r.Price)); //for MongoCursor<Rental>
+
             var model = new RentalsList()
             {
                 Rentals = rentals,
@@ -41,16 +45,30 @@ namespace RealEstateMvc5.Rentals
             return View(model);
         }
 
-        private MongoCursor<Rental> FilterRentals(RentalsFilter filters)
+        private IEnumerable<Rental> FilterRentals(RentalsFilter filters)
         {
-            if (!filters.PriceLimit.HasValue)
-            {
-                return Context.Rentals.FindAll();
-            }
-            var query = Query<Rental>.LTE(r => r.Price, filters.PriceLimit);
-            return Context.Rentals.Find(query);
-        }
+            IQueryable<Rental> rentals = Context.Rentals.AsQueryable()
+                .OrderBy(r => r.Price);
 
+            if (filters.MinimumRooms.HasValue)
+            {
+                rentals = rentals
+                    .Where(r => r.NumberOfRooms >= filters.MinimumRooms.Value);
+                //var minRoom = Query<Rental>.LTE(r=>r.NumberOfRooms,filters.MinimumRooms);
+                //rentals = rentals
+                //    .Where(r => minRoom.Inject());
+            }
+
+            if (filters.PriceLimit.HasValue)
+            {
+                var query = Query<Rental>.LTE(r => r.Price, filters.PriceLimit);
+                rentals = rentals
+                    .Where(r => query.Inject());
+            }
+
+            return rentals;
+        }
+        
         public ActionResult AdjustPrice(string id)
         {
             var rental = GetRental(id);
@@ -77,5 +95,7 @@ namespace RealEstateMvc5.Rentals
             Context.Rentals.Remove(Query.EQ("_id", new ObjectId(id)));
             return RedirectToAction("Index");
         }
+
+       
     }
 }
