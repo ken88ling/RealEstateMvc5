@@ -115,6 +115,23 @@ namespace RealEstateMvc5.Rentals
         public ActionResult AttachImage(string id, HttpPostedFileBase file)
         {
             var rental = GetRental(id);
+            if (rental.HasImage())
+            {
+                DeleteImage(rental);
+            }
+            StoreImage(file, rental);
+            return RedirectToAction("Index");
+        }
+
+        private void DeleteImage(Rental rental)
+        {
+            Context.Database.GridFS.DeleteById(new ObjectId(rental.ImageId));
+            rental.ImageId = null;
+            Context.Rentals.Save(rental);
+        }
+
+        private void StoreImage(HttpPostedFileBase file, Rental rental)
+        {
             var imageId = ObjectId.GenerateNewId();
             rental.ImageId = imageId.ToString();
             Context.Rentals.Save(rental);
@@ -124,8 +141,20 @@ namespace RealEstateMvc5.Rentals
                 ContentType = file.ContentType
             };
 
-            Context.Database.GridFS.Upload(file.InputStream, file.FileName,options);
-            return RedirectToAction("Index");
+            Context.Database.GridFS.Upload(file.InputStream, file.FileName, options);
+        }
+
+        public ActionResult GetImage(string id)
+        {
+            var image = Context.Database.GridFS
+                .FindOneById(new ObjectId(id));
+
+            if (image == null)
+            {
+                return HttpNotFound();
+            }
+
+            return File(image.OpenRead(), image.ContentType);
         }
     }
 }
