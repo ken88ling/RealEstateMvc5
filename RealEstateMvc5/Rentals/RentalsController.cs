@@ -119,22 +119,22 @@ namespace RealEstateMvc5.Rentals
             {
                 DeleteImage(rental);
             }
-            StoreImage(file, rental);
+            StoreImage(file, rental.Id);
             return RedirectToAction("Index");
         }
 
         private void DeleteImage(Rental rental)
         {
             Context.Database.GridFS.DeleteById(new ObjectId(rental.ImageId));
-            rental.ImageId = null;
-            Context.Rentals.Save(rental);
+            //rental.ImageId = null; //replacement operation
+            //Context.Rentals.Save(rental); //replacement operation
+            
         }
-
-        private void StoreImage(HttpPostedFileBase file, Rental rental)
+        // modify operation
+        private void StoreImage(HttpPostedFileBase file, string rentalId)
         {
             var imageId = ObjectId.GenerateNewId();
-            rental.ImageId = imageId.ToString();
-            Context.Rentals.Save(rental);
+            SetRentalImageId(rentalId, imageId.ToString());
             var options = new MongoGridFSCreateOptions()
             {
                 Id = imageId,
@@ -143,6 +143,28 @@ namespace RealEstateMvc5.Rentals
 
             Context.Database.GridFS.Upload(file.InputStream, file.FileName, options);
         }
+
+        private void SetRentalImageId(string rentalId, string imageId)
+        {
+            var rentalById = Query<Rental>.Where(r => r.Id == rentalId);
+            var setRentalImageId = Update<Rental>.Set(r => r.ImageId, imageId);
+            Context.Rentals.Update(rentalById, setRentalImageId);
+        }
+
+        //replacement operation
+        //private void StoreImage(HttpPostedFileBase file, Rental rental) 
+        //{
+        //    var imageId = ObjectId.GenerateNewId();
+        //    rental.ImageId = imageId.ToString();
+        //    Context.Rentals.Save(rental);
+        //    var options = new MongoGridFSCreateOptions()
+        //    {
+        //        Id = imageId,
+        //        ContentType = file.ContentType
+        //    };
+
+        //    Context.Database.GridFS.Upload(file.InputStream, file.FileName, options);
+        //}
 
         public ActionResult GetImage(string id)
         {
